@@ -41,5 +41,7 @@ function proxyToBranch(request, reply) {
 		return reply('bad branchy: ' + host);
 	}
 
+	delete request.headers['x-forwarded-proto'];
+
 	reply.proxy({ host: 'localhost', port: bi.port, protocol: 'http', passThrough: true, localStatePassThrough: true });
 }
