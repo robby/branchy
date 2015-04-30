@@ -1,5 +1,6 @@
 var Config = require('./config');
 var Hapi = require('hapi');
+var Joi = require('joi');
 var Json = require('jsonfile');
 var Portfinder = require('portfinder');
 
@@ -11,7 +12,7 @@ Portfinder.basePort = 9001;
 http.route({ method: ['GET'], path: '/{all*}', handler: proxyToBranch });
 http.route({ method: ['POST', 'PUT', 'DELETE'], path: '/{all*}', config: { payload: { parse: false } }, handler: proxyToBranch });
 
-http.route({ method: 'GET', path: '/{branch}/port', handler: function(request, reply) {
+http.route({ method: 'GET', path: '/{branch}/port', config: { validate: { params: { branch: Joi.string().lowercase() } } }, handler: function(request, reply) {
 	if (Config.branches[request.params.branch]) {
 		return reply(Config.branches[request.params.branch].port);
 	}
